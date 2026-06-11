@@ -157,7 +157,6 @@ export type Database = {
           pedido_id: string
           preco_unitario: number
           quantidade: number
-          tecido_id: string | null
         }
         Insert: {
           created_at?: string
@@ -168,7 +167,6 @@ export type Database = {
           pedido_id: string
           preco_unitario?: number
           quantidade?: number
-          tecido_id?: string | null
         }
         Update: {
           created_at?: string
@@ -179,7 +177,6 @@ export type Database = {
           pedido_id?: string
           preco_unitario?: number
           quantidade?: number
-          tecido_id?: string | null
         }
         Relationships: [
           {
@@ -194,13 +191,6 @@ export type Database = {
             columns: ["pedido_id"]
             isOneToOne: false
             referencedRelation: "pedidos"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "pedido_itens_tecido_id_fkey"
-            columns: ["tecido_id"]
-            isOneToOne: false
-            referencedRelation: "tecidos"
             referencedColumns: ["id"]
           },
         ]
@@ -279,39 +269,6 @@ export type Database = {
           id?: string
           nome?: string
           papel?: Database["public"]["Enums"]["papel_usuario"]
-          updated_at?: string
-        }
-        Relationships: []
-      }
-      tecidos: {
-        Row: {
-          acrescimo_preco: number
-          ativo: boolean
-          cor: string | null
-          created_at: string
-          foto_url: string | null
-          id: string
-          nome: string
-          updated_at: string
-        }
-        Insert: {
-          acrescimo_preco?: number
-          ativo?: boolean
-          cor?: string | null
-          created_at?: string
-          foto_url?: string | null
-          id?: string
-          nome: string
-          updated_at?: string
-        }
-        Update: {
-          acrescimo_preco?: number
-          ativo?: boolean
-          cor?: string | null
-          created_at?: string
-          foto_url?: string | null
-          id?: string
-          nome?: string
           updated_at?: string
         }
         Relationships: []

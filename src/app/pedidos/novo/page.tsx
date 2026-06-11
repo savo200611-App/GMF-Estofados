@@ -6,20 +6,14 @@ export const dynamic = "force-dynamic";
 
 export default async function NovoPedidoPage() {
   const supabase = await createClient();
-  const [{ data: clientes }, { data: modelos }, { data: tecidos }] =
-    await Promise.all([
-      supabase.from("clientes").select("id, nome").order("nome"),
-      supabase
-        .from("modelos")
-        .select("id, nome, preco_base")
-        .eq("ativo", true)
-        .order("nome"),
-      supabase
-        .from("tecidos")
-        .select("id, nome, acrescimo_preco")
-        .eq("ativo", true)
-        .order("nome"),
-    ]);
+  const [{ data: clientes }, { data: modelos }] = await Promise.all([
+    supabase.from("clientes").select("id, nome").order("nome"),
+    supabase
+      .from("modelos")
+      .select("id, nome, preco_base")
+      .eq("ativo", true)
+      .order("nome"),
+  ]);
 
   return (
     <AppShell title="Novo pedido">
@@ -35,11 +29,7 @@ export default async function NovoPedidoPage() {
             Cadastre um cliente antes de criar um pedido.
           </p>
         ) : (
-          <PedidoBuilder
-            clientes={clientes}
-            modelos={modelos ?? []}
-            tecidos={tecidos ?? []}
-          />
+          <PedidoBuilder clientes={clientes} modelos={modelos ?? []} />
         )}
       </div>
     </AppShell>

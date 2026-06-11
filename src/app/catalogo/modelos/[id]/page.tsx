@@ -34,10 +34,10 @@ export default async function ModeloDetalhePage({
   return (
     <AppShell title={modelo.nome}>
       <a
-        href="/catalogo/modelos"
+        href="/catalogo"
         className="text-sm text-mute transition hover:text-ink"
       >
-        ‹ Modelos
+        ‹ Catálogo
       </a>
       <div className={`mt-4 ${card} p-6`}>
         <ModeloForm

@@ -29,7 +29,7 @@ export default async function PedidoDetalhePage({
   const { data: itens } = await supabase
     .from("pedido_itens")
     .select(
-      "id, descricao_medida, extras, quantidade, preco_unitario, modelos(nome), tecidos(nome)",
+      "id, descricao_medida, extras, quantidade, preco_unitario, modelos(nome)",
     )
     .eq("pedido_id", id);
 
@@ -92,7 +92,6 @@ export default async function PedidoDetalhePage({
           <tbody className="divide-y divide-edge/60">
             {(itens ?? []).map((it) => {
               const modelo = it.modelos as { nome: string } | null;
-              const tecido = it.tecidos as { nome: string } | null;
               return (
                 <tr key={it.id}>
                   <td className="px-5 py-3">
@@ -100,7 +99,7 @@ export default async function PedidoDetalhePage({
                       {modelo?.nome ?? "Modelo removido"}
                     </p>
                     <p className="text-xs text-mute">
-                      {[tecido?.nome, it.descricao_medida, it.extras]
+                      {[it.descricao_medida, it.extras]
                         .filter(Boolean)
                         .join(" · ")}
                     </p>

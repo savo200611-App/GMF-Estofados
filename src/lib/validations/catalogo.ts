@@ -14,13 +14,4 @@ export const modeloSchema = z.object({
   ativo: z.boolean(),
 });
 
-export const tecidoSchema = z.object({
-  nome: z.string().trim().min(2, "Informe o nome do tecido."),
-  cor: z.string().trim().max(60).optional().or(z.literal("")),
-  foto_url: z.string().trim().url().optional().or(z.literal("")),
-  acrescimo_preco: precoBR,
-  ativo: z.boolean(),
-});
-
 export type ModeloInput = z.infer<typeof modeloSchema>;
-export type TecidoInput = z.infer<typeof tecidoSchema>;

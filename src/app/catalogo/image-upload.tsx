@@ -11,7 +11,7 @@ export function ImageUpload({
   defaultUrl,
   name = "foto_url",
 }: {
-  pasta: "modelos" | "tecidos";
+  pasta: "modelos";
   defaultUrl?: string | null;
   name?: string;
 }) {

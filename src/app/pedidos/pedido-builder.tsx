@@ -4,22 +4,36 @@ import { useState, useTransition } from "react";
 
 import { brl } from "@/lib/format";
 import { btnGhost, btnPrimary, input, label } from "@/components/ui";
-import { criarPedido, type ItemInput } from "./actions";
+import { criarPedido } from "./actions";
 
 type Cliente = { id: string; nome: string };
 type Modelo = { id: string; nome: string; preco_base: number };
-type Tecido = { id: string; nome: string; acrescimo_preco: number };
 
-type Linha = ItemInput & { uid: string };
+type Linha = {
+  uid: string;
+  modelo_id: string | null;
+  descricao_medida: string;
+  extras: string;
+  quantidade: number;
+  // Preco em formato BR digitado/ajustado pelo atendente (negociado no WhatsApp).
+  precoStr: string;
+};
+
+function paraNumero(precoStr: string) {
+  const n = Number(precoStr.replace(/\./g, "").replace(",", "."));
+  return Number.isFinite(n) && n >= 0 ? n : 0;
+}
+
+function paraStr(n: number) {
+  return n.toFixed(2).replace(".", ",");
+}
 
 export function PedidoBuilder({
   clientes,
   modelos,
-  tecidos,
 }: {
   clientes: Cliente[];
   modelos: Modelo[];
-  tecidos: Tecido[];
 }) {
   const [clienteId, setClienteId] = useState("");
   const [observacoes, setObservacoes] = useState("");
@@ -38,14 +52,17 @@ export function PedidoBuilder({
     setLinhas((l) => l.map((x) => (x.uid === uid ? { ...x, ...patch } : x)));
   }
 
+  function aoEscolherModelo(uid: string, modeloId: string) {
+    const m = modelos.find((x) => x.id === modeloId);
+    // Pre-preenche o preco com o base do modelo; o atendente ajusta se negociou outro valor.
+    atualizar(uid, {
+      modelo_id: modeloId || null,
+      precoStr: m ? paraStr(m.preco_base) : "",
+    });
+  }
+
   function precoLinha(linha: Linha) {
-    const m = modelos.find((x) => x.id === linha.modelo_id);
-    const t = tecidos.find((x) => x.id === linha.tecido_id);
-    if (!m) return 0;
-    return (
-      (m.preco_base + (t?.acrescimo_preco ?? 0)) *
-      Math.max(1, linha.quantidade)
-    );
+    return paraNumero(linha.precoStr) * Math.max(1, linha.quantidade);
   }
 
   const total = linhas.reduce((acc, l) => acc + precoLinha(l), 0);
@@ -57,7 +74,13 @@ export function PedidoBuilder({
         cliente_id: clienteId,
         observacoes,
         data_entrega_prevista: entrega || null,
-        itens: linhas.map(({ uid: _uid, ...resto }) => resto),
+        itens: linhas.map((l) => ({
+          modelo_id: l.modelo_id,
+          descricao_medida: l.descricao_medida,
+          extras: l.extras,
+          quantidade: l.quantidade,
+          preco_unitario: paraNumero(l.precoStr),
+        })),
       });
       if (res?.erro) setErro(res.erro);
     });
@@ -110,9 +133,7 @@ export function PedidoBuilder({
                   <select
                     value={linha.modelo_id ?? ""}
                     onChange={(e) =>
-                      atualizar(linha.uid, {
-                        modelo_id: e.target.value || null,
-                      })
+                      aoEscolherModelo(linha.uid, e.target.value)
                     }
                     className={input}
                   >
@@ -125,26 +146,18 @@ export function PedidoBuilder({
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs text-mute">Tecido</label>
-                  <select
-                    value={linha.tecido_id ?? ""}
+                  <label className="block text-xs text-mute">
+                    Preço negociado (R$)
+                  </label>
+                  <input
+                    inputMode="decimal"
+                    placeholder="0,00"
+                    value={linha.precoStr}
                     onChange={(e) =>
-                      atualizar(linha.uid, {
-                        tecido_id: e.target.value || null,
-                      })
+                      atualizar(linha.uid, { precoStr: e.target.value })
                     }
                     className={input}
-                  >
-                    <option value="">Sem tecido</option>
-                    {tecidos.map((t) => (
-                      <option key={t.id} value={t.id}>
-                        {t.nome}
-                        {t.acrescimo_preco > 0
-                          ? ` (+${brl(t.acrescimo_preco)})`
-                          : ""}
-                      </option>
-                    ))}
-                  </select>
+                  />
                 </div>
               </div>
 
@@ -169,7 +182,7 @@ export function PedidoBuilder({
                     onChange={(e) =>
                       atualizar(linha.uid, { extras: e.target.value })
                     }
-                    placeholder="ex: almofadas"
+                    placeholder="ex: tecido veludo, almofadas"
                     className={input}
                   />
                 </div>
@@ -254,9 +267,9 @@ function novaLinha(): Linha {
   return {
     uid: crypto.randomUUID(),
     modelo_id: null,
-    tecido_id: null,
     descricao_medida: "",
     extras: "",
     quantidade: 1,
+    precoStr: "",
   };
 }

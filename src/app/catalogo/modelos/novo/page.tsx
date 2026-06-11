@@ -7,10 +7,10 @@ export default function NovoModeloPage() {
   return (
     <AppShell title="Novo modelo">
       <a
-        href="/catalogo/modelos"
+        href="/catalogo"
         className="text-sm text-mute transition hover:text-ink"
       >
-        ‹ Modelos
+        ‹ Catálogo
       </a>
       <div className={`mt-4 ${card} p-6`}>
         <ModeloForm acao={criarModelo} textoBotao="Salvar modelo" />

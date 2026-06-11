@@ -93,7 +93,7 @@ export function ModeloForm({
         <button type="submit" disabled={pending} className={btnPrimary}>
           {pending ? "Salvando..." : textoBotao}
         </button>
-        <a href="/catalogo/modelos" className={btnGhost}>
+        <a href="/catalogo" className={btnGhost}>
           Cancelar
         </a>
       </div>

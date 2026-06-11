@@ -17,10 +17,11 @@ type Status = (typeof STATUS_VALIDOS)[number];
 
 export type ItemInput = {
   modelo_id: string | null;
-  tecido_id: string | null;
   descricao_medida: string;
   extras: string;
   quantidade: number;
+  // Preco negociado (via WhatsApp); pre-preenchido com o preco base do modelo.
+  preco_unitario: number;
 };
 
 export type NovoPedidoPayload = {
@@ -29,8 +30,6 @@ export type NovoPedidoPayload = {
   data_entrega_prevista: string | null;
   itens: ItemInput[];
 };
-
-const VAZIO_UUID = "00000000-0000-0000-0000-000000000000";
 
 export async function criarPedido(
   payload: NovoPedidoPayload,
@@ -45,43 +44,31 @@ export async function criarPedido(
   if (itens.length === 0)
     return { erro: "Adicione ao menos um item com modelo." };
 
-  // Precos autoritativos vindos do banco (nunca confiar no cliente).
+  // Confirma que os modelos existem (ids vindos do cliente).
   const modeloIds = [...new Set(itens.map((i) => i.modelo_id!))];
-  const tecidoIds = [
-    ...new Set(itens.map((i) => i.tecido_id).filter(Boolean) as string[]),
-  ];
-
   const { data: modelos } = await supabase
     .from("modelos")
-    .select("id, preco_base")
+    .select("id")
     .in("id", modeloIds);
-  const { data: tecidos } = await supabase
-    .from("tecidos")
-    .select("id, acrescimo_preco")
-    .in("id", tecidoIds.length ? tecidoIds : [VAZIO_UUID]);
+  const idsValidos = new Set(modelos?.map((m) => m.id) ?? []);
 
-  const precoModelo = new Map(modelos?.map((m) => [m.id, m.preco_base]) ?? []);
-  const acrescimoTecido = new Map(
-    tecidos?.map((t) => [t.id, t.acrescimo_preco]) ?? [],
-  );
-
-  const itensCalculados = itens.map((i) => {
-    const base = precoModelo.get(i.modelo_id!) ?? 0;
-    const acrescimo = i.tecido_id
-      ? (acrescimoTecido.get(i.tecido_id) ?? 0)
-      : 0;
-    const quantidade = Math.max(1, Math.floor(i.quantidade) || 1);
-    return {
+  const itensLimpos = [];
+  for (const i of itens) {
+    if (!idsValidos.has(i.modelo_id!))
+      return { erro: "Modelo invalido no pedido." };
+    const preco = Number(i.preco_unitario);
+    if (!Number.isFinite(preco) || preco < 0)
+      return { erro: "Preco invalido em um dos itens." };
+    itensLimpos.push({
       modelo_id: i.modelo_id,
-      tecido_id: i.tecido_id,
       descricao_medida: i.descricao_medida || null,
       extras: i.extras || null,
-      quantidade,
-      preco_unitario: base + acrescimo,
-    };
-  });
+      quantidade: Math.max(1, Math.floor(i.quantidade) || 1),
+      preco_unitario: preco,
+    });
+  }
 
-  const valorTotal = itensCalculados.reduce(
+  const valorTotal = itensLimpos.reduce(
     (acc, i) => acc + i.preco_unitario * i.quantidade,
     0,
   );
@@ -102,9 +89,9 @@ export async function criarPedido(
   if (erroPedido || !pedido)
     return { erro: "Nao foi possivel criar o pedido." };
 
-  const { error: erroItens } = await supabase.from("pedido_itens").insert(
-    itensCalculados.map((i) => ({ ...i, pedido_id: pedido.id })),
-  );
+  const { error: erroItens } = await supabase
+    .from("pedido_itens")
+    .insert(itensLimpos.map((i) => ({ ...i, pedido_id: pedido.id })));
 
   if (erroItens) {
     // Desfaz o pedido se os itens falharem (consistencia).

@@ -1,43 +1,66 @@
 import { createClient } from "@/lib/supabase/server";
+import { brl } from "@/lib/format";
 import { AppShell } from "@/components/app-shell";
+
+export const dynamic = "force-dynamic";
 
 export default async function CatalogoPage() {
   const supabase = await createClient();
-  const [{ count: nModelos }, { count: nTecidos }] = await Promise.all([
-    supabase.from("modelos").select("*", { count: "exact", head: true }),
-    supabase.from("tecidos").select("*", { count: "exact", head: true }),
-  ]);
-
-  const cards = [
-    {
-      nome: "Modelos",
-      descricao: "Sofás e poltronas do catálogo",
-      total: nModelos ?? 0,
-      href: "/catalogo/modelos",
-    },
-    {
-      nome: "Tecidos",
-      descricao: "Tecidos e acréscimos de preço",
-      total: nTecidos ?? 0,
-      href: "/catalogo/tecidos",
-    },
-  ];
+  const { data: modelos } = await supabase
+    .from("modelos")
+    .select("id, nome, preco_base, foto_url, ativo")
+    .order("nome", { ascending: true });
 
   return (
-    <AppShell title="Catálogo">
-      <div className="grid gap-4 sm:grid-cols-2">
-        {cards.map((c) => (
-          <a
-            key={c.href}
-            href={c.href}
-            className="rounded-2xl bg-gradient-to-br from-deep to-brand p-6 transition hover:opacity-95"
-          >
-            <p className="text-3xl font-semibold text-white">{c.total}</p>
-            <p className="mt-2 font-medium text-white">{c.nome}</p>
-            <p className="text-sm text-white/75">{c.descricao}</p>
-          </a>
-        ))}
-      </div>
+    <AppShell
+      title="Catálogo"
+      action={
+        <a
+          href="/catalogo/modelos/novo"
+          className="rounded-xl bg-brand px-3.5 py-1.5 text-sm font-medium text-white transition hover:bg-deep"
+        >
+          + Novo
+        </a>
+      }
+    >
+      {!modelos || modelos.length === 0 ? (
+        <p className="rounded-2xl border border-dashed border-edge px-6 py-12 text-center text-sm text-mute">
+          Nenhum modelo cadastrado ainda.
+        </p>
+      ) : (
+        <ul className="grid gap-4 sm:grid-cols-2">
+          {modelos.map((m) => (
+            <li key={m.id}>
+              <a
+                href={`/catalogo/modelos/${m.id}`}
+                className="flex items-center gap-4 rounded-2xl border border-edge bg-surface p-4 transition hover:border-brand"
+              >
+                <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-edge bg-raise">
+                  {m.foto_url ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={m.foto_url}
+                      alt=""
+                      className="h-full w-full object-cover"
+                    />
+                  ) : (
+                    <span className="text-xs text-mute">sem foto</span>
+                  )}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="truncate font-medium text-ink">{m.nome}</p>
+                  <p className="text-sm text-mute">{brl(m.preco_base)}</p>
+                </div>
+                {!m.ativo && (
+                  <span className="rounded-full bg-raise px-2.5 py-0.5 text-xs text-mute">
+                    Inativo
+                  </span>
+                )}
+              </a>
+            </li>
+          ))}
+        </ul>
+      )}
     </AppShell>
   );
 }
