@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { createClient } from "@/lib/supabase/client";
+import { btnPrimary, input, label } from "@/components/ui";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -34,49 +35,48 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="flex min-h-dvh items-center justify-center bg-neutral-50 px-4">
+    <main className="flex min-h-dvh items-center justify-center bg-bg px-4">
       <form
         onSubmit={entrar}
-        className="w-full max-w-sm rounded-2xl border border-neutral-200 bg-white p-8 shadow-sm"
+        className="w-full max-w-sm rounded-2xl border border-edge bg-surface p-8"
       >
-        <h1 className="text-xl font-semibold tracking-tight text-neutral-900">
-          GMF Estofados
+        <p className="font-serif text-2xl font-bold tracking-widest text-gold">
+          GMF
+        </p>
+        <h1 className="mt-1 text-lg font-semibold tracking-tight text-ink">
+          Estofados
         </h1>
-        <p className="mt-1 text-sm text-neutral-500">Painel de gestao</p>
+        <p className="mt-1 text-sm text-mute">Painel de gestão</p>
 
-        <div className="mt-6 space-y-4">
+        <div className="mt-7 space-y-4">
           <div>
-            <label className="block text-sm font-medium text-neutral-700">
-              E-mail
-            </label>
+            <label className={label}>E-mail</label>
             <input
               type="email"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="mt-1 w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm outline-none focus:border-neutral-900"
+              className={input}
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-neutral-700">
-              Senha
-            </label>
+            <label className={label}>Senha</label>
             <input
               type="password"
               required
               value={senha}
               onChange={(e) => setSenha(e.target.value)}
-              className="mt-1 w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm outline-none focus:border-neutral-900"
+              className={input}
             />
           </div>
         </div>
 
-        {erro && <p className="mt-4 text-sm text-red-600">{erro}</p>}
+        {erro && <p className="mt-4 text-sm text-danger">{erro}</p>}
 
         <button
           type="submit"
           disabled={carregando}
-          className="mt-6 w-full rounded-lg bg-neutral-900 py-2.5 text-sm font-medium text-white transition hover:bg-neutral-800 disabled:opacity-60"
+          className={`mt-7 w-full ${btnPrimary} py-2.5`}
         >
           {carregando ? "Entrando..." : "Entrar"}
         </button>

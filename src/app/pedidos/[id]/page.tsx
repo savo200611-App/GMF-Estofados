@@ -2,18 +2,11 @@ import { notFound } from "next/navigation";
 
 import { createClient } from "@/lib/supabase/server";
 import { brl } from "@/lib/format";
+import { AppShell } from "@/components/app-shell";
+import { card, STATUS_CHIP } from "@/components/ui";
 import { excluirPedido } from "../actions";
 
 export const dynamic = "force-dynamic";
-
-const STATUS_LABEL: Record<string, string> = {
-  novo: "Novo",
-  orcado: "Orcado",
-  fechado: "Fechado",
-  producao: "Producao",
-  entregue: "Entregue",
-  cancelado: "Cancelado",
-};
 
 export default async function PedidoDetalhePage({
   params,
@@ -46,104 +39,107 @@ export default async function PedidoDetalhePage({
     telefone: string | null;
   } | null;
 
+  const chip = STATUS_CHIP[pedido.status] ?? {
+    label: pedido.status,
+    cls: "bg-raise text-mute",
+  };
+
   async function excluir() {
     "use server";
     await excluirPedido(id);
   }
 
   return (
-    <main className="min-h-dvh bg-neutral-50">
-      <header className="flex items-center gap-3 border-b border-neutral-200 bg-white px-6 py-4">
+    <AppShell title="Pedido">
+      <div className="flex items-center justify-between">
         <a
           href="/pedidos"
-          className="text-sm text-neutral-500 transition hover:text-neutral-900"
+          className="text-sm text-mute transition hover:text-ink"
         >
-          Pedidos
+          ‹ Pedidos
         </a>
-        <span className="text-neutral-300">/</span>
-        <h1 className="text-lg font-semibold tracking-tight text-neutral-900">
-          {cliente?.nome ?? "Pedido"}
-        </h1>
-        <span className="rounded-full bg-neutral-100 px-3 py-1 text-xs text-neutral-600">
-          {STATUS_LABEL[pedido.status] ?? pedido.status}
+        <span className={`rounded-full px-3 py-1 text-xs ${chip.cls}`}>
+          {chip.label}
         </span>
-      </header>
+      </div>
 
-      <section className="mx-auto max-w-3xl px-6 py-8">
-        {cliente && (
-          <div className="mb-6 rounded-2xl border border-neutral-200 bg-white p-5">
-            <p className="font-medium text-neutral-900">{cliente.nome}</p>
+      {cliente && (
+        <a
+          href={`/clientes/${cliente.id}`}
+          className="mt-4 flex items-center justify-between rounded-2xl bg-light px-5 py-3.5 transition hover:bg-white"
+        >
+          <div>
+            <p className="text-sm font-medium text-neutral-900">
+              {cliente.nome}
+            </p>
             {cliente.telefone && (
-              <p className="text-sm text-neutral-500">{cliente.telefone}</p>
+              <p className="text-xs text-neutral-500">{cliente.telefone}</p>
             )}
           </div>
-        )}
+          <span className="text-neutral-400">›</span>
+        </a>
+      )}
 
-        <div className="overflow-hidden rounded-2xl border border-neutral-200 bg-white">
-          <table className="w-full text-sm">
-            <thead className="border-b border-neutral-200 text-left text-neutral-500">
-              <tr>
-                <th className="px-5 py-3 font-medium">Item</th>
-                <th className="px-5 py-3 font-medium">Qtd</th>
-                <th className="px-5 py-3 text-right font-medium">Valor</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-neutral-100">
-              {(itens ?? []).map((it) => {
-                const modelo = it.modelos as { nome: string } | null;
-                const tecido = it.tecidos as { nome: string } | null;
-                return (
-                  <tr key={it.id}>
-                    <td className="px-5 py-3">
-                      <p className="font-medium text-neutral-900">
-                        {modelo?.nome ?? "Modelo removido"}
-                      </p>
-                      <p className="text-xs text-neutral-500">
-                        {[
-                          tecido?.nome,
-                          it.descricao_medida,
-                          it.extras,
-                        ]
-                          .filter(Boolean)
-                          .join(" - ")}
-                      </p>
-                    </td>
-                    <td className="px-5 py-3 text-neutral-700">
-                      {it.quantidade}
-                    </td>
-                    <td className="px-5 py-3 text-right text-neutral-900">
-                      {brl(it.preco_unitario * it.quantidade)}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-            <tfoot className="border-t border-neutral-200">
-              <tr>
-                <td colSpan={2} className="px-5 py-3 font-medium text-neutral-700">
-                  Total
-                </td>
-                <td className="px-5 py-3 text-right text-lg font-semibold text-neutral-900">
-                  {brl(pedido.valor_total)}
-                </td>
-              </tr>
-            </tfoot>
-          </table>
+      <div className={`mt-4 overflow-hidden ${card}`}>
+        <table className="w-full text-sm">
+          <thead className="border-b border-edge text-left text-mute">
+            <tr>
+              <th className="px-5 py-3 font-medium">Item</th>
+              <th className="px-5 py-3 font-medium">Qtd</th>
+              <th className="px-5 py-3 text-right font-medium">Valor</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-edge/60">
+            {(itens ?? []).map((it) => {
+              const modelo = it.modelos as { nome: string } | null;
+              const tecido = it.tecidos as { nome: string } | null;
+              return (
+                <tr key={it.id}>
+                  <td className="px-5 py-3">
+                    <p className="font-medium text-ink">
+                      {modelo?.nome ?? "Modelo removido"}
+                    </p>
+                    <p className="text-xs text-mute">
+                      {[tecido?.nome, it.descricao_medida, it.extras]
+                        .filter(Boolean)
+                        .join(" · ")}
+                    </p>
+                  </td>
+                  <td className="px-5 py-3 text-mute">{it.quantidade}</td>
+                  <td className="px-5 py-3 text-right text-ink">
+                    {brl(it.preco_unitario * it.quantidade)}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+          <tfoot className="border-t border-edge">
+            <tr>
+              <td colSpan={2} className="px-5 py-3 font-medium text-mute">
+                Total
+              </td>
+              <td className="px-5 py-3 text-right text-lg font-semibold text-gold">
+                {brl(pedido.valor_total)}
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+
+      {pedido.observacoes && (
+        <div className={`mt-4 ${card} p-5`}>
+          <p className="text-xs font-medium uppercase tracking-wide text-mute">
+            Observações
+          </p>
+          <p className="mt-1 text-sm text-ink">{pedido.observacoes}</p>
         </div>
+      )}
 
-        {pedido.observacoes && (
-          <div className="mt-4 rounded-2xl border border-neutral-200 bg-white p-5">
-            <p className="text-sm font-medium text-neutral-700">Observacoes</p>
-            <p className="mt-1 text-sm text-neutral-600">{pedido.observacoes}</p>
-          </div>
-        )}
-
-        <form action={excluir} className="mt-4">
-          <button className="text-sm text-red-600 transition hover:text-red-700">
-            Excluir pedido
-          </button>
-        </form>
-      </section>
-    </main>
+      <form action={excluir} className="mt-4">
+        <button className="text-sm text-danger/80 transition hover:text-danger">
+          Excluir pedido
+        </button>
+      </form>
+    </AppShell>
   );
 }

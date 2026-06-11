@@ -1,6 +1,10 @@
 import { redirect } from "next/navigation";
 
 import { createClient } from "@/lib/supabase/server";
+import { AppShell } from "@/components/app-shell";
+import { brl } from "@/lib/format";
+
+export const dynamic = "force-dynamic";
 
 async function sair() {
   "use server";
@@ -15,7 +19,6 @@ export default async function HomePage() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // O middleware ja redireciona, mas garantimos no servidor.
   if (!user) redirect("/login");
 
   const { data } = await supabase
@@ -25,48 +28,105 @@ export default async function HomePage() {
     .single();
   const perfil = data as { nome: string; papel: string } | null;
 
-  const modulos = [
-    { nome: "Clientes", descricao: "Cadastro e historico", href: "/clientes" },
-    { nome: "Catalogo", descricao: "Modelos e tecidos", href: "/catalogo" },
-    { nome: "Pedidos", descricao: "Orcamentos e producao", href: "/pedidos" },
-  ];
+  const [clientesRes, ativosRes, entreguesRes, abertoRes] = await Promise.all([
+    supabase.from("clientes").select("*", { count: "exact", head: true }),
+    supabase
+      .from("pedidos")
+      .select("*", { count: "exact", head: true })
+      .in("status", ["novo", "orcado", "fechado", "producao"]),
+    supabase
+      .from("pedidos")
+      .select("*", { count: "exact", head: true })
+      .eq("status", "entregue"),
+    supabase
+      .from("pedidos")
+      .select("valor_total")
+      .in("status", ["novo", "orcado", "fechado", "producao"]),
+  ]);
+
+  const valorAberto = (abertoRes.data ?? []).reduce(
+    (acc, p) => acc + p.valor_total,
+    0,
+  );
+
+  const primeiroNome = (perfil?.nome ?? "").split(" ")[0] || "GMF";
+  const inicial = primeiroNome.charAt(0).toUpperCase();
 
   return (
-    <main className="min-h-dvh bg-neutral-50">
-      <header className="flex items-center justify-between border-b border-neutral-200 bg-white px-6 py-4">
-        <div>
-          <h1 className="text-lg font-semibold tracking-tight text-neutral-900">
-            GMF Estofados
-          </h1>
-          <p className="text-sm text-neutral-500">
-            {perfil?.nome ?? user.email}
-            {perfil?.papel ? ` - ${perfil.papel}` : ""}
-          </p>
-        </div>
+    <AppShell
+      title="Painel"
+      avatarLetter={inicial}
+      action={
         <form action={sair}>
-          <button className="rounded-lg border border-neutral-300 px-3 py-1.5 text-sm text-neutral-700 transition hover:bg-neutral-100">
+          <button className="text-xs text-mute transition hover:text-ink">
             Sair
           </button>
         </form>
-      </header>
+      }
+    >
+      <p className="text-sm text-mute">
+        Bem-vindo ao seu painel, {primeiroNome}
+      </p>
 
-      <section className="mx-auto max-w-4xl px-6 py-8">
-        <h2 className="text-sm font-medium uppercase tracking-wide text-neutral-400">
-          Modulos
-        </h2>
-        <div className="mt-4 grid gap-4 sm:grid-cols-3">
-          {modulos.map((m) => (
-            <a
-              key={m.href}
-              href={m.href}
-              className="rounded-2xl border border-neutral-200 bg-white p-5 transition hover:border-neutral-900"
-            >
-              <p className="font-medium text-neutral-900">{m.nome}</p>
-              <p className="mt-1 text-sm text-neutral-500">{m.descricao}</p>
-            </a>
-          ))}
+      <div className="mt-5 grid grid-cols-2 gap-4">
+        <div className="rounded-2xl bg-gradient-to-br from-deep to-brand p-5 text-center">
+          <p className="text-3xl font-semibold text-white">
+            {clientesRes.count ?? 0}
+          </p>
+          <p className="mt-1 text-xs text-white/80">Clientes</p>
         </div>
-      </section>
-    </main>
+        <div className="rounded-2xl bg-gradient-to-br from-deep to-brand p-5 text-center">
+          <p className="text-3xl font-semibold text-white">
+            {ativosRes.count ?? 0}
+          </p>
+          <p className="mt-1 text-xs text-white/80">Pedidos ativos</p>
+        </div>
+      </div>
+
+      <div className="mt-4 grid grid-cols-2 gap-4">
+        <div className="rounded-2xl border border-edge bg-surface p-5">
+          <p className="text-xs text-mute">Em aberto</p>
+          <p className="mt-1 text-lg font-semibold text-gold">
+            {brl(valorAberto)}
+          </p>
+        </div>
+        <div className="rounded-2xl border border-edge bg-surface p-5">
+          <p className="text-xs text-mute">Entregues</p>
+          <p className="mt-1 text-lg font-semibold text-ok">
+            {entreguesRes.count ?? 0}
+          </p>
+        </div>
+      </div>
+
+      <div className="mt-6 space-y-3">
+        <a
+          href="/pedidos/novo"
+          className="flex items-center justify-center gap-2 rounded-2xl bg-brand px-5 py-3.5 text-sm font-medium text-white transition hover:bg-deep"
+        >
+          + Novo pedido
+        </a>
+        <a
+          href="/clientes"
+          className="flex items-center justify-between rounded-2xl bg-light px-5 py-3.5 text-sm font-medium text-neutral-900 transition hover:bg-white"
+        >
+          <span>Clientes</span>
+          <span className="text-neutral-400">›</span>
+        </a>
+        <a
+          href="/pedidos"
+          className="flex items-center justify-between rounded-2xl bg-light px-5 py-3.5 text-sm font-medium text-neutral-900 transition hover:bg-white"
+        >
+          <span>Quadro de pedidos</span>
+          <span className="text-neutral-400">›</span>
+        </a>
+        <a
+          href="/catalogo"
+          className="flex items-center justify-between rounded-2xl bg-light px-5 py-3.5 text-sm font-medium text-neutral-900 transition hover:bg-white"
+        >
+          <span>Catálogo</span>
+          <span className="text-neutral-400">›</span>
+        </a>
+      </div>
+    </AppShell>
   );
 }

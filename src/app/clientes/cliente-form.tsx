@@ -3,6 +3,7 @@
 import { useActionState } from "react";
 
 import { ORIGENS, ORIGEM_LABEL } from "@/lib/validations/cliente";
+import { btnGhost, btnPrimary, fieldError, input, label } from "@/components/ui";
 import type { ClienteFormState } from "./actions";
 
 type Acao = (
@@ -20,9 +21,6 @@ type Defaults = {
   observacoes?: string | null;
   consentimento_lgpd?: boolean;
 };
-
-const inputClass =
-  "mt-1 w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm outline-none focus:border-neutral-900";
 
 export function ClienteForm({
   acao,
@@ -42,68 +40,52 @@ export function ClienteForm({
   return (
     <form action={formAction} className="space-y-4">
       <div>
-        <label className="block text-sm font-medium text-neutral-700">
-          Nome *
-        </label>
+        <label className={label}>Nome *</label>
         <input
           name="nome"
           defaultValue={defaults?.nome ?? ""}
-          className={inputClass}
+          className={input}
         />
-        {campos.nome && (
-          <p className="mt-1 text-sm text-red-600">{campos.nome}</p>
-        )}
+        {campos.nome && <p className={fieldError}>{campos.nome}</p>}
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
-          <label className="block text-sm font-medium text-neutral-700">
-            Telefone
-          </label>
+          <label className={label}>Telefone</label>
           <input
             name="telefone"
             defaultValue={defaults?.telefone ?? ""}
-            className={inputClass}
+            className={input}
           />
-          {campos.telefone && (
-            <p className="mt-1 text-sm text-red-600">{campos.telefone}</p>
-          )}
+          {campos.telefone && <p className={fieldError}>{campos.telefone}</p>}
         </div>
         <div>
-          <label className="block text-sm font-medium text-neutral-700">
-            E-mail
-          </label>
+          <label className={label}>E-mail</label>
           <input
             name="email"
             type="email"
             defaultValue={defaults?.email ?? ""}
-            className={inputClass}
+            className={input}
           />
-          {campos.email && (
-            <p className="mt-1 text-sm text-red-600">{campos.email}</p>
-          )}
+          {campos.email && <p className={fieldError}>{campos.email}</p>}
         </div>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
-          <label className="block text-sm font-medium text-neutral-700">
-            Cidade
-          </label>
+          <label className={label}>Cidade</label>
           <input
             name="cidade"
             defaultValue={defaults?.cidade ?? ""}
-            className={inputClass}
+            className={input}
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-neutral-700">
-            Origem
-          </label>
+          <label className={label}>Origem</label>
           <select
             name="origem"
             defaultValue={defaults?.origem ?? "whatsapp"}
-            className={inputClass}
+            className={input}
           >
             {ORIGENS.map((o) => (
               <option key={o} value={o}>
@@ -115,54 +97,41 @@ export function ClienteForm({
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-neutral-700">
-          Endereco
-        </label>
+        <label className={label}>Endereço</label>
         <input
           name="endereco"
           defaultValue={defaults?.endereco ?? ""}
-          className={inputClass}
+          className={input}
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-neutral-700">
-          Observacoes
-        </label>
+        <label className={label}>Observações</label>
         <textarea
           name="observacoes"
           rows={3}
           defaultValue={defaults?.observacoes ?? ""}
-          className={inputClass}
+          className={input}
         />
       </div>
 
-      <label className="flex items-start gap-2 text-sm text-neutral-700">
+      <label className="flex items-start gap-2 text-sm text-mute">
         <input
           type="checkbox"
           name="consentimento_lgpd"
           defaultChecked={defaults?.consentimento_lgpd ?? false}
-          className="mt-0.5"
+          className="mt-0.5 accent-[#2f9e5f]"
         />
-        <span>
-          Cliente autorizou o contato e o uso dos dados (LGPD).
-        </span>
+        <span>Cliente autorizou o contato e o uso dos dados (LGPD).</span>
       </label>
 
-      {state.erro && <p className="text-sm text-red-600">{state.erro}</p>}
+      {state.erro && <p className="text-sm text-danger">{state.erro}</p>}
 
       <div className="flex gap-3 pt-2">
-        <button
-          type="submit"
-          disabled={pending}
-          className="rounded-lg bg-neutral-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-neutral-800 disabled:opacity-60"
-        >
+        <button type="submit" disabled={pending} className={btnPrimary}>
           {pending ? "Salvando..." : textoBotao}
         </button>
-        <a
-          href="/clientes"
-          className="rounded-lg border border-neutral-300 px-4 py-2 text-sm text-neutral-700 transition hover:bg-neutral-100"
-        >
+        <a href="/clientes" className={btnGhost}>
           Cancelar
         </a>
       </div>

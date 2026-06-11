@@ -1,21 +1,13 @@
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 
 import { createClient } from "@/lib/supabase/server";
+import { brl } from "@/lib/format";
+import { AppShell } from "@/components/app-shell";
+import { card, STATUS_CHIP } from "@/components/ui";
 import { atualizarCliente, excluirCliente } from "../actions";
 import { ClienteForm } from "../cliente-form";
 
-const STATUS_LABEL: Record<string, string> = {
-  novo: "Novo",
-  orcado: "Orcado",
-  fechado: "Fechado",
-  producao: "Producao",
-  entregue: "Entregue",
-  cancelado: "Cancelado",
-};
-
-function brl(valor: number) {
-  return valor.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
-}
+export const dynamic = "force-dynamic";
 
 export default async function ClienteDetalhePage({
   params,
@@ -50,34 +42,28 @@ export default async function ClienteDetalhePage({
   }
 
   return (
-    <main className="min-h-dvh bg-neutral-50">
-      <header className="flex items-center gap-3 border-b border-neutral-200 bg-white px-6 py-4">
-        <a
-          href="/clientes"
-          className="text-sm text-neutral-500 transition hover:text-neutral-900"
-        >
-          Clientes
-        </a>
-        <span className="text-neutral-300">/</span>
-        <h1 className="text-lg font-semibold tracking-tight text-neutral-900">
-          {cliente.nome}
-        </h1>
-      </header>
+    <AppShell title={cliente.nome}>
+      <a
+        href="/clientes"
+        className="text-sm text-mute transition hover:text-ink"
+      >
+        ‹ Clientes
+      </a>
 
-      <section className="mx-auto grid max-w-4xl gap-6 px-6 py-8 lg:grid-cols-5">
+      <div className="mt-4 grid gap-6 lg:grid-cols-5">
         <div className="lg:col-span-3">
-          <div className="rounded-2xl border border-neutral-200 bg-white p-6">
-            <h2 className="mb-4 text-sm font-medium uppercase tracking-wide text-neutral-400">
+          <div className={`${card} p-6`}>
+            <h2 className="mb-4 text-xs font-medium uppercase tracking-wide text-mute">
               Dados do cliente
             </h2>
             {erro === "vinculado" && (
-              <p className="mb-4 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">
-                Este cliente tem pedidos vinculados e nao pode ser excluido.
+              <p className="mb-4 rounded-xl bg-danger/15 px-3 py-2 text-sm text-danger">
+                Este cliente tem pedidos vinculados e não pode ser excluído.
               </p>
             )}
             <ClienteForm
               acao={atualizar}
-              textoBotao="Salvar alteracoes"
+              textoBotao="Salvar alterações"
               defaults={{
                 nome: cliente.nome,
                 telefone: cliente.telefone,
@@ -92,43 +78,51 @@ export default async function ClienteDetalhePage({
           </div>
 
           <form action={excluir} className="mt-4">
-            <button className="text-sm text-red-600 transition hover:text-red-700">
+            <button className="text-sm text-danger/80 transition hover:text-danger">
               Excluir cliente
             </button>
           </form>
         </div>
 
         <div className="lg:col-span-2">
-          <div className="rounded-2xl border border-neutral-200 bg-white p-6">
-            <h2 className="mb-4 text-sm font-medium uppercase tracking-wide text-neutral-400">
+          <div className={`${card} p-6`}>
+            <h2 className="mb-4 text-xs font-medium uppercase tracking-wide text-mute">
               Pedidos
             </h2>
             {!pedidos || pedidos.length === 0 ? (
-              <p className="text-sm text-neutral-500">
+              <p className="text-sm text-mute">
                 Nenhum pedido para este cliente ainda.
               </p>
             ) : (
               <ul className="space-y-3">
-                {pedidos.map((p) => (
-                  <li
-                    key={p.id}
-                    className="flex items-center justify-between rounded-lg border border-neutral-200 px-3 py-2"
-                  >
-                    <span className="rounded-full bg-neutral-100 px-2.5 py-0.5 text-xs text-neutral-600">
-                      {STATUS_LABEL[p.status] ?? p.status}
-                    </span>
-                    <span className="text-sm font-medium text-neutral-900">
-                      {brl(p.valor_total)}
-                    </span>
-                  </li>
-                ))}
+                {pedidos.map((p) => {
+                  const chip = STATUS_CHIP[p.status] ?? {
+                    label: p.status,
+                    cls: "bg-raise text-mute",
+                  };
+                  return (
+                    <li key={p.id}>
+                      <a
+                        href={`/pedidos/${p.id}`}
+                        className="flex items-center justify-between rounded-xl border border-edge bg-raise px-3 py-2.5 transition hover:border-brand"
+                      >
+                        <span
+                          className={`rounded-full px-2.5 py-0.5 text-xs ${chip.cls}`}
+                        >
+                          {chip.label}
+                        </span>
+                        <span className="text-sm font-medium text-ink">
+                          {brl(p.valor_total)}
+                        </span>
+                      </a>
+                    </li>
+                  );
+                })}
               </ul>
             )}
           </div>
         </div>
-      </section>
-    </main>
+      </div>
+    </AppShell>
   );
 }
-
-export const dynamic = "force-dynamic";

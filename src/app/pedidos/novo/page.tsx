@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { AppShell } from "@/components/app-shell";
 import { PedidoBuilder } from "../pedido-builder";
 
 export const dynamic = "force-dynamic";
@@ -21,23 +22,16 @@ export default async function NovoPedidoPage() {
     ]);
 
   return (
-    <main className="min-h-dvh bg-neutral-50">
-      <header className="flex items-center gap-3 border-b border-neutral-200 bg-white px-6 py-4">
-        <a
-          href="/pedidos"
-          className="text-sm text-neutral-500 transition hover:text-neutral-900"
-        >
-          Pedidos
-        </a>
-        <span className="text-neutral-300">/</span>
-        <h1 className="text-lg font-semibold tracking-tight text-neutral-900">
-          Novo pedido
-        </h1>
-      </header>
-
-      <section className="mx-auto max-w-3xl px-6 py-8">
+    <AppShell title="Novo pedido">
+      <a
+        href="/pedidos"
+        className="text-sm text-mute transition hover:text-ink"
+      >
+        ‹ Pedidos
+      </a>
+      <div className="mt-4">
         {!clientes || clientes.length === 0 ? (
-          <p className="rounded-2xl border border-dashed border-neutral-300 px-6 py-12 text-center text-sm text-neutral-500">
+          <p className="rounded-2xl border border-dashed border-edge px-6 py-12 text-center text-sm text-mute">
             Cadastre um cliente antes de criar um pedido.
           </p>
         ) : (
@@ -47,7 +41,7 @@ export default async function NovoPedidoPage() {
             tecidos={tecidos ?? []}
           />
         )}
-      </section>
-    </main>
+      </div>
+    </AppShell>
   );
 }

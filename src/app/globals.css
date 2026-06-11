@@ -1,26 +1,29 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@theme {
+  /* Paleta GMF - tema escuro verde-profundo com dourado da marca */
+  --color-bg: #0e1612;
+  --color-bar: #080d0a;
+  --color-surface: #15211a;
+  --color-raise: #1c2b22;
+  --color-edge: #263a2e;
+  --color-light: #f2f6f0;
+  --color-ink: #e9f0ea;
+  --color-mute: #9eb2a4;
+  --color-brand: #2f9e5f;
+  --color-deep: #1e6e41;
+  --color-gold: #d2ab4a;
+  --color-info: #5b9bd5;
+  --color-warn: #e0a23e;
+  --color-danger: #e26060;
+  --color-ok: #45c277;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
 }

@@ -50,12 +50,12 @@ export function ImageUpload({
     <div>
       <input type="hidden" name={name} value={url} readOnly />
       <div className="flex items-center gap-4">
-        <div className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-neutral-200 bg-neutral-50">
+        <div className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-edge bg-raise">
           {url ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img src={url} alt="" className="h-full w-full object-cover" />
           ) : (
-            <span className="text-xs text-neutral-400">sem foto</span>
+            <span className="text-xs text-mute">sem foto</span>
           )}
         </div>
         <div>
@@ -63,11 +63,11 @@ export function ImageUpload({
             type="button"
             onClick={() => inputRef.current?.click()}
             disabled={enviando}
-            className="rounded-lg border border-neutral-300 px-3 py-1.5 text-sm text-neutral-700 transition hover:bg-neutral-100 disabled:opacity-60"
+            className="rounded-xl border border-edge px-3 py-1.5 text-sm text-mute transition hover:bg-raise hover:text-ink disabled:opacity-60"
           >
             {enviando ? "Enviando..." : url ? "Trocar foto" : "Enviar foto"}
           </button>
-          {erro && <p className="mt-1 text-sm text-red-600">{erro}</p>}
+          {erro && <p className="mt-1 text-sm text-danger">{erro}</p>}
         </div>
       </div>
       <input

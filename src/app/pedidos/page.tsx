@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { AppShell } from "@/components/app-shell";
 import { KanbanBoard, type PedidoCard } from "./kanban-board";
 
 export const dynamic = "force-dynamic";
@@ -21,37 +22,24 @@ export default async function PedidosPage() {
   });
 
   return (
-    <main className="min-h-dvh bg-neutral-50">
-      <header className="flex items-center justify-between border-b border-neutral-200 bg-white px-6 py-4">
-        <div className="flex items-center gap-3">
-          <a
-            href="/"
-            className="text-sm text-neutral-500 transition hover:text-neutral-900"
-          >
-            Inicio
-          </a>
-          <span className="text-neutral-300">/</span>
-          <h1 className="text-lg font-semibold tracking-tight text-neutral-900">
-            Pedidos
-          </h1>
-        </div>
+    <AppShell
+      title="Pedidos"
+      action={
         <a
           href="/pedidos/novo"
-          className="rounded-lg bg-neutral-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-neutral-800"
+          className="rounded-xl bg-brand px-3.5 py-1.5 text-sm font-medium text-white transition hover:bg-deep"
         >
-          Novo pedido
+          + Novo
         </a>
-      </header>
-
-      <section className="px-6 py-8">
-        {cards.length === 0 ? (
-          <p className="mx-auto max-w-md rounded-2xl border border-dashed border-neutral-300 px-6 py-12 text-center text-sm text-neutral-500">
-            Nenhum pedido ainda. Crie o primeiro para comecar o fluxo.
-          </p>
-        ) : (
-          <KanbanBoard inicial={cards} />
-        )}
-      </section>
-    </main>
+      }
+    >
+      {cards.length === 0 ? (
+        <p className="mx-auto max-w-md rounded-2xl border border-dashed border-edge px-6 py-12 text-center text-sm text-mute">
+          Nenhum pedido ainda. Crie o primeiro para começar o fluxo.
+        </p>
+      ) : (
+        <KanbanBoard inicial={cards} />
+      )}
+    </AppShell>
   );
 }

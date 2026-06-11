@@ -2,6 +2,8 @@ import { redirect } from "next/navigation";
 
 import { createClient } from "@/lib/supabase/server";
 import { ORIGEM_LABEL } from "@/lib/validations/cliente";
+import { AppShell } from "@/components/app-shell";
+import { input } from "@/components/ui";
 
 export default async function ClientesPage({
   searchParams,
@@ -22,68 +24,59 @@ export default async function ClientesPage({
   if (error) redirect("/login");
 
   return (
-    <main className="min-h-dvh bg-neutral-50">
-      <header className="flex items-center justify-between border-b border-neutral-200 bg-white px-6 py-4">
-        <div className="flex items-center gap-3">
-          <a
-            href="/"
-            className="text-sm text-neutral-500 transition hover:text-neutral-900"
-          >
-            Inicio
-          </a>
-          <span className="text-neutral-300">/</span>
-          <h1 className="text-lg font-semibold tracking-tight text-neutral-900">
-            Clientes
-          </h1>
-        </div>
+    <AppShell
+      title="Clientes"
+      action={
         <a
           href="/clientes/novo"
-          className="rounded-lg bg-neutral-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-neutral-800"
+          className="rounded-xl bg-brand px-3.5 py-1.5 text-sm font-medium text-white transition hover:bg-deep"
         >
-          Novo cliente
+          + Novo
         </a>
-      </header>
+      }
+    >
+      <form>
+        <input
+          name="q"
+          defaultValue={q ?? ""}
+          placeholder="Buscar por nome..."
+          className={input}
+        />
+      </form>
 
-      <section className="mx-auto max-w-4xl px-6 py-8">
-        <form className="mb-6">
-          <input
-            name="q"
-            defaultValue={q ?? ""}
-            placeholder="Buscar por nome..."
-            className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm outline-none focus:border-neutral-900"
-          />
-        </form>
-
-        {!clientes || clientes.length === 0 ? (
-          <p className="rounded-2xl border border-dashed border-neutral-300 px-6 py-12 text-center text-sm text-neutral-500">
-            {q
-              ? "Nenhum cliente encontrado para essa busca."
-              : "Nenhum cliente cadastrado ainda."}
-          </p>
-        ) : (
-          <ul className="divide-y divide-neutral-200 overflow-hidden rounded-2xl border border-neutral-200 bg-white">
-            {clientes.map((c) => (
-              <li key={c.id}>
-                <a
-                  href={`/clientes/${c.id}`}
-                  className="flex items-center justify-between px-5 py-4 transition hover:bg-neutral-50"
-                >
-                  <div>
-                    <p className="font-medium text-neutral-900">{c.nome}</p>
-                    <p className="text-sm text-neutral-500">
-                      {c.cidade ?? "Sem cidade"}
-                      {c.telefone ? ` - ${c.telefone}` : ""}
-                    </p>
-                  </div>
-                  <span className="rounded-full bg-neutral-100 px-3 py-1 text-xs text-neutral-600">
-                    {ORIGEM_LABEL[c.origem]}
-                  </span>
-                </a>
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
-    </main>
+      {!clientes || clientes.length === 0 ? (
+        <p className="mt-6 rounded-2xl border border-dashed border-edge px-6 py-12 text-center text-sm text-mute">
+          {q
+            ? "Nenhum cliente encontrado para essa busca."
+            : "Nenhum cliente cadastrado ainda."}
+        </p>
+      ) : (
+        <div className="mt-6 space-y-3">
+          {clientes.map((c) => (
+            <a
+              key={c.id}
+              href={`/clientes/${c.id}`}
+              className="flex items-center justify-between rounded-2xl bg-light px-5 py-3.5 transition hover:bg-white"
+            >
+              <div className="min-w-0">
+                <p className="truncate text-sm font-medium text-neutral-900">
+                  {c.nome}
+                </p>
+                <p className="truncate text-xs text-neutral-500">
+                  {c.cidade ?? "Sem cidade"}
+                  {c.telefone ? ` · ${c.telefone}` : ""}
+                </p>
+              </div>
+              <div className="ml-3 flex shrink-0 items-center gap-3">
+                <span className="rounded-full bg-black/10 px-2.5 py-0.5 text-xs text-neutral-700">
+                  {ORIGEM_LABEL[c.origem]}
+                </span>
+                <span className="text-neutral-400">›</span>
+              </div>
+            </a>
+          ))}
+        </div>
+      )}
+    </AppShell>
   );
 }

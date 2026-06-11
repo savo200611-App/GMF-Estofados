@@ -14,9 +14,9 @@ export type PedidoCard = {
 
 const COLUNAS: { status: string; titulo: string }[] = [
   { status: "novo", titulo: "Novo" },
-  { status: "orcado", titulo: "Orcado" },
+  { status: "orcado", titulo: "Orçado" },
   { status: "fechado", titulo: "Fechado" },
-  { status: "producao", titulo: "Producao" },
+  { status: "producao", titulo: "Produção" },
   { status: "entregue", titulo: "Entregue" },
 ];
 
@@ -36,16 +36,14 @@ export function KanbanBoard({ inicial }: { inicial: PedidoCard[] }) {
     if (!atual || atual.status === status) return;
 
     // Atualizacao otimista.
-    setCards((cs) =>
-      cs.map((c) => (c.id === id ? { ...c, status } : c)),
-    );
+    setCards((cs) => cs.map((c) => (c.id === id ? { ...c, status } : c)));
     startTransition(() => {
       moverPedido(id, status as never);
     });
   }
 
   return (
-    <div className="grid grid-cols-2 gap-4 lg:grid-cols-5">
+    <div className="grid grid-cols-2 gap-3 lg:grid-cols-5">
       {COLUNAS.map((col) => {
         const lista = cards.filter((c) => c.status === col.status);
         const totalColuna = lista.reduce((a, c) => a + c.valor_total, 0);
@@ -58,17 +56,17 @@ export function KanbanBoard({ inicial }: { inicial: PedidoCard[] }) {
             }}
             onDragLeave={() => setSobre((s) => (s === col.status ? null : s))}
             onDrop={() => soltar(col.status)}
-            className={`flex min-h-64 flex-col rounded-2xl border bg-neutral-100/60 p-3 transition ${
+            className={`flex min-h-64 flex-col rounded-2xl border p-3 transition ${
               sobre === col.status
-                ? "border-neutral-900 bg-neutral-100"
-                : "border-neutral-200"
+                ? "border-brand bg-raise"
+                : "border-edge bg-surface"
             }`}
           >
             <div className="mb-3 flex items-center justify-between px-1">
-              <span className="text-sm font-medium text-neutral-700">
+              <span className="text-sm font-medium text-ink">
                 {col.titulo}
               </span>
-              <span className="rounded-full bg-white px-2 py-0.5 text-xs text-neutral-500">
+              <span className="rounded-full bg-raise px-2 py-0.5 text-xs text-mute">
                 {lista.length}
               </span>
             </div>
@@ -81,14 +79,16 @@ export function KanbanBoard({ inicial }: { inicial: PedidoCard[] }) {
                   draggable
                   onDragStart={() => setArrastando(card.id)}
                   onDragEnd={() => setArrastando(null)}
-                  className={`block cursor-grab rounded-xl border border-neutral-200 bg-white p-3 shadow-sm transition active:cursor-grabbing ${
-                    arrastando === card.id ? "opacity-40" : "hover:border-neutral-400"
+                  className={`block cursor-grab rounded-xl border border-edge bg-raise p-3 transition active:cursor-grabbing ${
+                    arrastando === card.id
+                      ? "opacity-40"
+                      : "hover:border-brand"
                   }`}
                 >
-                  <p className="truncate text-sm font-medium text-neutral-900">
+                  <p className="truncate text-sm font-medium text-ink">
                     {card.cliente_nome}
                   </p>
-                  <p className="mt-1 text-sm text-neutral-500">
+                  <p className="mt-1 text-sm text-mute">
                     {brl(card.valor_total)}
                   </p>
                 </a>
@@ -96,7 +96,7 @@ export function KanbanBoard({ inicial }: { inicial: PedidoCard[] }) {
             </div>
 
             {lista.length > 0 && (
-              <p className="mt-3 px-1 text-xs text-neutral-400">
+              <p className="mt-3 px-1 text-xs text-mute/70">
                 {brl(totalColuna)}
               </p>
             )}
