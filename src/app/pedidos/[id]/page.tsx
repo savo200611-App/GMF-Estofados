@@ -66,17 +66,24 @@ export default async function PedidoDetalhePage({
       {cliente && (
         <a
           href={`/clientes/${cliente.id}`}
-          className="mt-4 flex items-center justify-between rounded-2xl bg-light px-5 py-3.5 transition hover:bg-white"
+          className="mt-4 flex items-center gap-3.5 rounded-md border border-edge bg-surface px-4 py-3.5 transition hover:opacity-75"
         >
-          <div>
-            <p className="text-sm font-medium text-neutral-900">
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-bar font-serif text-base font-bold text-gold">
+            {cliente.nome.charAt(0).toUpperCase()}
+          </span>
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-[15px] font-bold text-ink">
               {cliente.nome}
             </p>
             {cliente.telefone && (
-              <p className="text-xs text-neutral-500">{cliente.telefone}</p>
+              <p className="mt-0.5 text-xs font-medium text-mute">
+                {cliente.telefone}
+              </p>
             )}
           </div>
-          <span className="text-neutral-400">›</span>
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#ddb85f" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
+            <path d="M9 6l6 6-6 6" />
+          </svg>
         </a>
       )}
 

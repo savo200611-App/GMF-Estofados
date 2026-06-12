@@ -63,10 +63,8 @@ export function KanbanBoard({ inicial }: { inicial: PedidoCard[] }) {
             }`}
           >
             <div className="mb-3 flex items-center justify-between px-1">
-              <span className="text-sm font-medium text-ink">
-                {col.titulo}
-              </span>
-              <span className="rounded-full bg-raise px-2 py-0.5 text-xs text-mute">
+              <span className="text-sm font-bold text-ink">{col.titulo}</span>
+              <span className="rounded-full bg-raise px-2 py-0.5 text-xs font-semibold text-mute">
                 {lista.length}
               </span>
             </div>
@@ -79,16 +77,16 @@ export function KanbanBoard({ inicial }: { inicial: PedidoCard[] }) {
                   draggable
                   onDragStart={() => setArrastando(card.id)}
                   onDragEnd={() => setArrastando(null)}
-                  className={`block cursor-grab rounded-xl border border-edge bg-raise p-3 transition active:cursor-grabbing ${
+                  className={`block cursor-grab rounded-md border border-edge border-l-[3px] border-l-goldeep bg-raise p-3 transition active:cursor-grabbing ${
                     arrastando === card.id
                       ? "opacity-40"
-                      : "hover:border-brand"
+                      : "hover:opacity-75"
                   }`}
                 >
-                  <p className="truncate text-sm font-medium text-ink">
+                  <p className="truncate text-sm font-bold text-ink">
                     {card.cliente_nome}
                   </p>
-                  <p className="mt-1 text-sm text-mute">
+                  <p className="mt-1.5 text-[15px] font-bold text-brand">
                     {brl(card.valor_total)}
                   </p>
                 </a>

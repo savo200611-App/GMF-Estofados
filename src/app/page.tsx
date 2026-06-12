@@ -6,6 +6,14 @@ import { brl } from "@/lib/format";
 
 export const dynamic = "force-dynamic";
 
+function Chevron() {
+  return (
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#ddb85f" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M9 6l6 6-6 6" />
+    </svg>
+  );
+}
+
 async function sair() {
   "use server";
   const supabase = await createClient();
@@ -52,80 +60,83 @@ export default async function HomePage() {
   const primeiroNome = (perfil?.nome ?? "").split(" ")[0] || "GMF";
   const inicial = primeiroNome.charAt(0).toUpperCase();
 
+  const atalhos = [
+    { nome: "Clientes", href: "/clientes" },
+    { nome: "Quadro de pedidos", href: "/pedidos" },
+    { nome: "Catálogo", href: "/catalogo" },
+  ];
+
   return (
     <AppShell
       title="Painel"
       avatarLetter={inicial}
       action={
         <form action={sair}>
-          <button className="text-xs text-mute transition hover:text-ink">
+          <button className="text-sm font-medium text-mute transition hover:opacity-75">
             Sair
           </button>
         </form>
       }
     >
-      <p className="text-sm text-mute">
-        Bem-vindo ao seu painel, {primeiroNome}
+      <p className="text-[15px] text-mute">
+        Bem-vindo ao seu painel,{" "}
+        <span className="font-semibold text-ink">{primeiroNome}</span>
       </p>
 
-      <div className="mt-5 grid grid-cols-2 gap-4">
-        <div className="rounded-2xl bg-gradient-to-br from-deep to-brand p-5 text-center">
-          <p className="text-3xl font-semibold text-white">
+      <div className="mt-4 grid grid-cols-2 gap-3">
+        <div className="rounded-[10px] bg-gradient-to-br from-ok to-deep p-4.5 text-center">
+          <p className="text-3xl font-extrabold text-white">
             {clientesRes.count ?? 0}
           </p>
-          <p className="mt-1 text-xs text-white/80">Clientes</p>
+          <p className="mt-2 text-[13px] font-semibold text-white/88">
+            Clientes
+          </p>
         </div>
-        <div className="rounded-2xl bg-gradient-to-br from-deep to-brand p-5 text-center">
-          <p className="text-3xl font-semibold text-white">
+        <div className="rounded-[10px] bg-gradient-to-br from-ok to-deep p-4.5 text-center">
+          <p className="text-3xl font-extrabold text-white">
             {ativosRes.count ?? 0}
           </p>
-          <p className="mt-1 text-xs text-white/80">Pedidos ativos</p>
+          <p className="mt-2 text-[13px] font-semibold text-white/88">
+            Pedidos ativos
+          </p>
         </div>
       </div>
 
-      <div className="mt-4 grid grid-cols-2 gap-4">
-        <div className="rounded-2xl border border-edge bg-surface p-5">
-          <p className="text-xs text-mute">Em aberto</p>
-          <p className="mt-1 text-lg font-semibold text-gold">
+      <div className="mt-3 grid grid-cols-2 gap-3">
+        <div className="rounded-[10px] border border-edge bg-surface p-4">
+          <p className="text-xs font-semibold text-mute">Em aberto</p>
+          <p className="mt-2 text-[21px] font-extrabold text-gold">
             {brl(valorAberto)}
           </p>
         </div>
-        <div className="rounded-2xl border border-edge bg-surface p-5">
-          <p className="text-xs text-mute">Entregues</p>
-          <p className="mt-1 text-lg font-semibold text-ok">
+        <div className="rounded-[10px] border border-edge bg-surface p-4">
+          <p className="text-xs font-semibold text-mute">Entregues</p>
+          <p className="mt-2 text-[21px] font-extrabold text-brand">
             {entreguesRes.count ?? 0}
           </p>
         </div>
       </div>
 
-      <div className="mt-6 space-y-3">
-        <a
-          href="/pedidos/novo"
-          className="flex items-center justify-center gap-2 rounded-2xl bg-brand px-5 py-3.5 text-sm font-medium text-white transition hover:bg-deep"
-        >
-          + Novo pedido
-        </a>
-        <a
-          href="/clientes"
-          className="flex items-center justify-between rounded-2xl bg-light px-5 py-3.5 text-sm font-medium text-neutral-900 transition hover:bg-white"
-        >
-          <span>Clientes</span>
-          <span className="text-neutral-400">›</span>
-        </a>
-        <a
-          href="/pedidos"
-          className="flex items-center justify-between rounded-2xl bg-light px-5 py-3.5 text-sm font-medium text-neutral-900 transition hover:bg-white"
-        >
-          <span>Quadro de pedidos</span>
-          <span className="text-neutral-400">›</span>
-        </a>
-        <a
-          href="/catalogo"
-          className="flex items-center justify-between rounded-2xl bg-light px-5 py-3.5 text-sm font-medium text-neutral-900 transition hover:bg-white"
-        >
-          <span>Catálogo</span>
-          <span className="text-neutral-400">›</span>
-        </a>
+      <a
+        href="/pedidos/novo"
+        className="mt-5 flex items-center justify-center rounded-md bg-brand py-4 text-[15px] font-bold text-[#08130c] transition hover:opacity-75"
+      >
+        + Novo pedido
+      </a>
+
+      <div className="mt-3.5 space-y-2.5">
+        {atalhos.map((a) => (
+          <a
+            key={a.href}
+            href={a.href}
+            className="flex items-center justify-between rounded-md border border-edge bg-surface px-4.5 py-4 transition hover:opacity-75"
+          >
+            <span className="text-[15px] font-semibold text-ink">
+              {a.nome}
+            </span>
+            <Chevron />
+          </a>
+        ))}
       </div>
     </AppShell>
   );

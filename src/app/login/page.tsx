@@ -40,13 +40,13 @@ export default function LoginPage() {
         onSubmit={entrar}
         className="w-full max-w-sm rounded-2xl border border-edge bg-surface p-8"
       >
-        <p className="font-serif text-2xl font-bold tracking-widest text-gold">
+        <p className="font-serif text-[34px] font-bold leading-none text-gold">
           GMF
         </p>
-        <h1 className="mt-1 text-lg font-semibold tracking-tight text-ink">
+        <h1 className="mt-1.5 text-xs font-bold uppercase tracking-[0.4em] text-goldeep">
           Estofados
         </h1>
-        <p className="mt-1 text-sm text-mute">Painel de gestão</p>
+        <p className="mt-4 text-sm text-mute">Painel de gestão</p>
 
         <div className="mt-7 space-y-4">
           <div>
