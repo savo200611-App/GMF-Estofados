@@ -8,9 +8,12 @@ import { enviarOrcamentoPorEmail } from "./email-action";
 export function AcoesPedido({
   pedidoId,
   emailCliente,
+  emailHabilitado,
 }: {
   pedidoId: string;
   emailCliente: string | null;
+  // Resend configurado no servidor (precisa de dominio verificado).
+  emailHabilitado: boolean;
 }) {
   const [pending, startTransition] = useTransition();
   const [feedback, setFeedback] = useState<{
@@ -38,7 +41,7 @@ export function AcoesPedido({
         Baixar PDF
       </a>
 
-      {emailCliente && (
+      {emailHabilitado && emailCliente && (
         <button onClick={enviar} disabled={pending} className={btnPrimary}>
           {pending ? "Enviando..." : "Enviar por e-mail"}
         </button>

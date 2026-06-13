@@ -147,6 +147,7 @@ export default async function PedidoDetalhePage({
         <AcoesPedido
           pedidoId={id}
           emailCliente={cliente?.email ?? null}
+          emailHabilitado={Boolean(process.env.RESEND_API_KEY)}
         />
       </div>
 
