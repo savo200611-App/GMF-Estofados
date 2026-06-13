@@ -104,7 +104,7 @@ export default async function ClienteDetalhePage({
                     <li key={p.id}>
                       <a
                         href={`/pedidos/${p.id}`}
-                        className="flex items-center justify-between rounded-xl border border-edge bg-raise px-3 py-2.5 transition hover:border-brand"
+                        className="flex items-center justify-between rounded-md border border-edge bg-raise px-3 py-2.5 transition hover:opacity-75"
                       >
                         <span
                           className={`rounded-full px-2.5 py-0.5 text-xs ${chip.cls}`}

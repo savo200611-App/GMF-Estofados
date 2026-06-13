@@ -27,7 +27,7 @@ export default async function PedidosPage() {
       action={
         <a
           href="/pedidos/novo"
-          className="rounded-xl bg-brand px-3.5 py-1.5 text-sm font-medium text-white transition hover:bg-deep"
+          className="rounded-md bg-gold px-3.5 py-2 text-sm font-semibold text-[#1a130a] transition hover:opacity-75"
         >
           + Novo
         </a>

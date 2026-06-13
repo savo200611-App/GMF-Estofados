@@ -14,12 +14,10 @@
   --color-ink: #f2ede2;
   --color-mute: #9fa89f;
 
-  /* Âncoras da marca */
+  /* Âncoras da marca — ouro é a cor de ação e destaque */
   --color-gold: #ddb85f;      /* ouro · tema escuro */
   --color-goldeep: #c6a24e;   /* Ouro GMF · institucional */
-  --color-brand: #38a86c;     /* verde ação · tema escuro */
-  --color-ok: #2e8e5b;        /* Verde Conforto */
-  --color-deep: #1c6440;      /* verde profundo (gradientes) */
+  --color-ok: #2e8e5b;        /* Verde Conforto · APENAS funcional (sucesso/pago) */
 
   /* Funcionais */
   --color-warn: #b5832a;

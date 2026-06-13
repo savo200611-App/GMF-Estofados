@@ -84,19 +84,19 @@ export default async function HomePage() {
       </p>
 
       <div className="mt-4 grid grid-cols-2 gap-3">
-        <div className="rounded-[10px] bg-gradient-to-br from-ok to-deep p-4.5 text-center">
-          <p className="text-3xl font-extrabold text-white">
+        <div className="rounded-[10px] bg-gradient-to-br from-[#e3c878] via-goldeep to-[#8c6b29] p-4.5 text-center">
+          <p className="text-3xl font-extrabold text-[#1a130a]">
             {clientesRes.count ?? 0}
           </p>
-          <p className="mt-2 text-[13px] font-semibold text-white/88">
+          <p className="mt-2 text-[13px] font-semibold text-[#3a2a0e]">
             Clientes
           </p>
         </div>
-        <div className="rounded-[10px] bg-gradient-to-br from-ok to-deep p-4.5 text-center">
-          <p className="text-3xl font-extrabold text-white">
+        <div className="rounded-[10px] bg-gradient-to-br from-[#e3c878] via-goldeep to-[#8c6b29] p-4.5 text-center">
+          <p className="text-3xl font-extrabold text-[#1a130a]">
             {ativosRes.count ?? 0}
           </p>
-          <p className="mt-2 text-[13px] font-semibold text-white/88">
+          <p className="mt-2 text-[13px] font-semibold text-[#3a2a0e]">
             Pedidos ativos
           </p>
         </div>
@@ -111,7 +111,7 @@ export default async function HomePage() {
         </div>
         <div className="rounded-[10px] border border-edge bg-surface p-4">
           <p className="text-xs font-semibold text-mute">Entregues</p>
-          <p className="mt-2 text-[21px] font-extrabold text-brand">
+          <p className="mt-2 text-[21px] font-extrabold text-ink">
             {entreguesRes.count ?? 0}
           </p>
         </div>
@@ -119,7 +119,7 @@ export default async function HomePage() {
 
       <a
         href="/pedidos/novo"
-        className="mt-5 flex items-center justify-center rounded-md bg-brand py-4 text-[15px] font-bold text-[#08130c] transition hover:opacity-75"
+        className="mt-5 flex items-center justify-center rounded-md bg-gold py-4 text-[15px] font-bold text-[#1a130a] transition hover:opacity-75"
       >
         + Novo pedido
       </a>

@@ -74,7 +74,7 @@ export function AppShell({
           </div>
           <div className="flex items-center gap-4">
             {action}
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-brand text-sm font-bold text-[#08130c]">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#221f19] font-serif text-sm font-bold text-goldeep">
               {avatarLetter}
             </div>
           </div>
@@ -96,7 +96,7 @@ export function AppShell({
                 href={href}
                 className={`flex flex-col items-center gap-1 px-4 pb-3 pt-2.5 text-[10px] transition ${
                   ativo
-                    ? "font-semibold text-brand"
+                    ? "font-semibold text-gold"
                     : "font-medium text-[#6c756b] hover:opacity-75"
                 }`}
               >

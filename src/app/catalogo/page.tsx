@@ -17,7 +17,7 @@ export default async function CatalogoPage() {
       action={
         <a
           href="/catalogo/modelos/novo"
-          className="rounded-xl bg-brand px-3.5 py-1.5 text-sm font-medium text-white transition hover:bg-deep"
+          className="rounded-md bg-gold px-3.5 py-2 text-sm font-semibold text-[#1a130a] transition hover:opacity-75"
         >
           + Novo
         </a>
@@ -33,7 +33,7 @@ export default async function CatalogoPage() {
             <li key={m.id}>
               <a
                 href={`/catalogo/modelos/${m.id}`}
-                className="flex items-center gap-4 rounded-2xl border border-edge bg-surface p-4 transition hover:border-brand"
+                className="flex items-center gap-4 rounded-lg border border-edge bg-surface p-4 transition hover:opacity-75"
               >
                 <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-edge bg-raise">
                   {m.foto_url ? (

@@ -239,11 +239,13 @@ export function PedidoBuilder({
 
       {erro && <p className="text-sm text-danger">{erro}</p>}
 
-      <div className="flex items-center justify-between rounded-2xl bg-gradient-to-r from-deep to-brand px-6 py-4">
-        <span className="text-xs uppercase tracking-wide text-white/75">
+      <div className="flex items-center justify-between rounded-lg bg-gradient-to-r from-[#e3c878] via-goldeep to-[#8c6b29] px-6 py-4">
+        <span className="text-xs font-semibold uppercase tracking-wide text-[#3a2a0e]">
           Total
         </span>
-        <span className="text-xl font-semibold text-white">{brl(total)}</span>
+        <span className="text-xl font-extrabold text-[#1a130a]">
+          {brl(total)}
+        </span>
       </div>
 
       <div className="flex gap-3">

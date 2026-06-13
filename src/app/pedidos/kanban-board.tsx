@@ -58,7 +58,7 @@ export function KanbanBoard({ inicial }: { inicial: PedidoCard[] }) {
             onDrop={() => soltar(col.status)}
             className={`flex min-h-64 flex-col rounded-2xl border p-3 transition ${
               sobre === col.status
-                ? "border-brand bg-raise"
+                ? "border-gold bg-raise"
                 : "border-edge bg-surface"
             }`}
           >
@@ -86,7 +86,7 @@ export function KanbanBoard({ inicial }: { inicial: PedidoCard[] }) {
                   <p className="truncate text-sm font-bold text-ink">
                     {card.cliente_nome}
                   </p>
-                  <p className="mt-1.5 text-[15px] font-bold text-brand">
+                  <p className="mt-1.5 text-[15px] font-bold text-gold">
                     {brl(card.valor_total)}
                   </p>
                 </a>
