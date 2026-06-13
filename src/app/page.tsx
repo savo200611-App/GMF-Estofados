@@ -63,6 +63,7 @@ export default async function HomePage() {
   const atalhos = [
     { nome: "Clientes", href: "/clientes" },
     { nome: "Quadro de pedidos", href: "/pedidos" },
+    { nome: "Caixa", href: "/caixa" },
     { nome: "Catálogo", href: "/catalogo" },
   ];
 

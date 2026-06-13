@@ -1,4 +1,4 @@
-﻿export type Json =
+export type Json =
   | string
   | number
   | boolean
@@ -107,6 +107,70 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "documentos_pedido_id_fkey"
+            columns: ["pedido_id"]
+            isOneToOne: false
+            referencedRelation: "pedidos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lancamentos: {
+        Row: {
+          categoria: string
+          created_at: string
+          criado_por: string | null
+          data: string
+          descricao: string | null
+          forma_pagamento: Database["public"]["Enums"]["forma_pagamento"] | null
+          id: string
+          observacoes: string | null
+          pedido_id: string | null
+          tipo: Database["public"]["Enums"]["tipo_lancamento"]
+          updated_at: string
+          valor: number
+        }
+        Insert: {
+          categoria: string
+          created_at?: string
+          criado_por?: string | null
+          data?: string
+          descricao?: string | null
+          forma_pagamento?:
+            | Database["public"]["Enums"]["forma_pagamento"]
+            | null
+          id?: string
+          observacoes?: string | null
+          pedido_id?: string | null
+          tipo: Database["public"]["Enums"]["tipo_lancamento"]
+          updated_at?: string
+          valor: number
+        }
+        Update: {
+          categoria?: string
+          created_at?: string
+          criado_por?: string | null
+          data?: string
+          descricao?: string | null
+          forma_pagamento?:
+            | Database["public"]["Enums"]["forma_pagamento"]
+            | null
+          id?: string
+          observacoes?: string | null
+          pedido_id?: string | null
+          tipo?: Database["public"]["Enums"]["tipo_lancamento"]
+          updated_at?: string
+          valor?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lancamentos_criado_por_fkey"
+            columns: ["criado_por"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lancamentos_pedido_id_fkey"
             columns: ["pedido_id"]
             isOneToOne: false
             referencedRelation: "pedidos"
@@ -281,6 +345,13 @@ export type Database = {
       is_staff: { Args: never; Returns: boolean }
     }
     Enums: {
+      forma_pagamento:
+        | "pix"
+        | "dinheiro"
+        | "cartao"
+        | "boleto"
+        | "transferencia"
+        | "outro"
       origem_cliente: "instagram" | "indicacao" | "site" | "whatsapp" | "outro"
       papel_usuario: "dono" | "dev"
       status_pedido:
@@ -291,6 +362,7 @@ export type Database = {
         | "entregue"
         | "cancelado"
       tipo_documento: "orcamento" | "pedido" | "recibo"
+      tipo_lancamento: "receita" | "despesa"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -421,6 +493,14 @@ export const Constants = {
   },
   public: {
     Enums: {
+      forma_pagamento: [
+        "pix",
+        "dinheiro",
+        "cartao",
+        "boleto",
+        "transferencia",
+        "outro",
+      ],
       origem_cliente: ["instagram", "indicacao", "site", "whatsapp", "outro"],
       papel_usuario: ["dono", "dev"],
       status_pedido: [
@@ -432,6 +512,7 @@ export const Constants = {
         "cancelado",
       ],
       tipo_documento: ["orcamento", "pedido", "recibo"],
+      tipo_lancamento: ["receita", "despesa"],
     },
   },
 } as const

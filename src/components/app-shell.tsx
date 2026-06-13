@@ -40,10 +40,21 @@ function TagIcon() {
   );
 }
 
+function WalletIcon() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 7.5A1.5 1.5 0 0 1 4.5 6H18v3" />
+      <path d="M3 7.5V18a1.5 1.5 0 0 0 1.5 1.5H19.5A1.5 1.5 0 0 0 21 18v-2" />
+      <path d="M21 12v4h-4a2 2 0 0 1 0-4z" />
+    </svg>
+  );
+}
+
 const TABS = [
   { href: "/", label: "Início", Icon: HomeIcon },
   { href: "/clientes", label: "Clientes", Icon: UsersIcon },
   { href: "/pedidos", label: "Pedidos", Icon: BoardIcon },
+  { href: "/caixa", label: "Caixa", Icon: WalletIcon },
   { href: "/catalogo", label: "Catálogo", Icon: TagIcon },
 ];
 
