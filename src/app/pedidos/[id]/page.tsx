@@ -5,6 +5,7 @@ import { brl } from "@/lib/format";
 import { AppShell } from "@/components/app-shell";
 import { card, STATUS_CHIP } from "@/components/ui";
 import { excluirPedido } from "../actions";
+import { AcoesPedido } from "./acoes-pedido";
 
 export const dynamic = "force-dynamic";
 
@@ -19,7 +20,7 @@ export default async function PedidoDetalhePage({
   const { data: pedido } = await supabase
     .from("pedidos")
     .select(
-      "id, status, valor_total, observacoes, data_entrega_prevista, clientes(id, nome, telefone)",
+      "id, status, valor_total, observacoes, data_entrega_prevista, clientes(id, nome, telefone, email)",
     )
     .eq("id", id)
     .single();
@@ -37,6 +38,7 @@ export default async function PedidoDetalhePage({
     id: string;
     nome: string;
     telefone: string | null;
+    email: string | null;
   } | null;
 
   const chip = STATUS_CHIP[pedido.status] ?? {
@@ -140,6 +142,13 @@ export default async function PedidoDetalhePage({
           <p className="mt-1 text-sm text-ink">{pedido.observacoes}</p>
         </div>
       )}
+
+      <div className="mt-6">
+        <AcoesPedido
+          pedidoId={id}
+          emailCliente={cliente?.email ?? null}
+        />
+      </div>
 
       <form action={excluir} className="mt-4">
         <button className="text-sm text-danger/80 transition hover:text-danger">
